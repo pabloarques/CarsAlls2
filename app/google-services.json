@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "949636828631",
+    "project_id": "carsalls",
+    "storage_bucket": "carsalls.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:949636828631:android:d3909431cbbb49fd1c0f92",
+        "android_client_info": {
+          "package_name": "com.example.carsalls"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "949636828631-1o7ptf5d09mg91j4g4r9jo0bc27cmorl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDg7e3eS-0jJ9XZonHSAPhajJtjzy0oR64"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "949636828631-1o7ptf5d09mg91j4g4r9jo0bc27cmorl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
