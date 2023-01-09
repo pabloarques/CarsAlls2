@@ -108,7 +108,7 @@
 
     <Button
         android:id="@+id/btn_Eliminar"
-        android:layout_width="141dp"
+        android:layout_width="143dp"
         android:layout_height="48dp"
         android:drawableLeft="@drawable/ic_baseline_delete_24"
         android:text="Eliminar"
