@@ -29,6 +29,12 @@ public class HomeFragment extends Fragment {
 
         binding.imgPerfil.setImageResource(R.drawable.kkabarth);
 
+        binding.imgbCoches.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               
+            }
+        });
 
 
         return root;
