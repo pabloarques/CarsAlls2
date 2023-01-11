@@ -27,6 +27,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -52,6 +54,7 @@ public class NotificationsFragment extends Fragment {
     String photo = "photo";
     String idd;
 
+
     ProgressDialog progressDialog;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -62,38 +65,74 @@ public class NotificationsFragment extends Fragment {
         binding = FragmentPerfilBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+
         SharedViewModel sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
         sharedViewModel.getUser().observe(getViewLifecycleOwner(), (user) -> {
                 authUser = user;
         });
 
+
+        //INSTANCIAR VARIABLES FIREBASE
         progressDialog = new ProgressDialog(requireContext());
         mfirestore = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference();
 
+
         binding.btnEditar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                actualizarFoto();
+
+                //actualizarFoto();
             }
         });
+
 
         binding.btnEliminar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                HashMap<String, Object> map = new HashMap<>();
+                map.put("photo", "");
+                mfirestore.collection("coche").document(idd).update(map);
+                Toast.makeText(requireContext(), "Foto eliminada", Toast.LENGTH_SHORT).show();
 
             }
         });
-        
+
+        binding.btnCerrarSesion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mAuth.signOut();
+                Toast.makeText(requireContext(), "Ha cerrado sesion", Toast.LENGTH_SHORT);
+                startActivity(new Intent(requireContext(), MainActivity.class));
+            }
+        });
+
+        //RELLENAR DATOS DE USUARIO
+        Usuario usuario = new Usuario();
+
+        usuario.setNombre(mAuth.getCurrentUser().getDisplayName());
+        usuario.setCorreo(mAuth.getCurrentUser().getEmail());
+        usuario.setImagenPerfil(String.valueOf(image_url));
+
+        DatabaseReference base = FirebaseDatabase.getInstance().getReference();
+
+        DatabaseReference users = base.child("users");
+        DatabaseReference uid = users.child(authUser.getUid());
+        DatabaseReference usuarioss = uid.child("usuarios");
+
+        DatabaseReference reference = usuarioss.push();
 
         return root;
-    }
+    }//Oncreate
+
+
+
+
 
     private void actualizarFoto() {
         Intent i = new Intent(Intent.ACTION_PICK);
         i.setType("image/*");
-
         startActivityForResult(i, COD_SEL_IMAGE);
     }
 
@@ -117,6 +156,7 @@ public class NotificationsFragment extends Fragment {
         StorageReference reference = storageReference.child(rute_storage_photo);
         reference.putFile(image_url).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
 
+            @SuppressLint("SuspiciousIndentation")
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
@@ -143,18 +183,12 @@ public class NotificationsFragment extends Fragment {
         });
     }
 
-    private void getCoche(String id){
-        mfirestore.collection("coche").document(id).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
 
-            }
-        });
-    }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
     }
+
 }
