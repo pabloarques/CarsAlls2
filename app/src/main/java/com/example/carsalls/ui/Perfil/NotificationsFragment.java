@@ -52,8 +52,8 @@ public class NotificationsFragment extends Fragment {
 
     private Uri image_url;
     String photo = "photo";
-    String idd;
-
+    String rute_storage_photo;
+    String rute_storage_photoP;
 
     ProgressDialog progressDialog;
 
@@ -69,6 +69,25 @@ public class NotificationsFragment extends Fragment {
         SharedViewModel sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
         sharedViewModel.getUser().observe(getViewLifecycleOwner(), (user) -> {
                 authUser = user;
+
+        //RELLENAR DATOS DE USUARIO
+        Usuario usuario = new Usuario();
+
+        usuario.setNombre(mAuth.getCurrentUser().getDisplayName());
+        usuario.setCorreo(mAuth.getCurrentUser().getEmail());
+        usuario.setImagenPerfil(String.valueOf(mAuth.getCurrentUser().getPhotoUrl()));
+
+        DatabaseReference base = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference users = base.child("users");
+        DatabaseReference uid = users.child(authUser.getUid());
+        DatabaseReference usuarioss = uid.child("usuarios");
+
+        DatabaseReference reference = usuarioss.push();
+            reference.setValue(usuario);
+
+            binding.txtNombreUser.setText(authUser.getDisplayName());
+            binding.txtCorreoElectronico2.setText(authUser.getEmail());
+
         });
 
 
@@ -82,8 +101,7 @@ public class NotificationsFragment extends Fragment {
         binding.btnEditar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                //actualizarFoto();
+               actualizarFoto();
             }
         });
 
@@ -93,7 +111,7 @@ public class NotificationsFragment extends Fragment {
             public void onClick(View view) {
                 HashMap<String, Object> map = new HashMap<>();
                 map.put("photo", "");
-                mfirestore.collection("coche").document(idd).update(map);
+                mfirestore.collection("coche").document("LA").update(map);
                 Toast.makeText(requireContext(), "Foto eliminada", Toast.LENGTH_SHORT).show();
 
             }
@@ -108,25 +126,8 @@ public class NotificationsFragment extends Fragment {
             }
         });
 
-        //RELLENAR DATOS DE USUARIO
-        Usuario usuario = new Usuario();
-
-        usuario.setNombre(mAuth.getCurrentUser().getDisplayName());
-        usuario.setCorreo(mAuth.getCurrentUser().getEmail());
-        usuario.setImagenPerfil(String.valueOf(image_url));
-
-        DatabaseReference base = FirebaseDatabase.getInstance().getReference();
-
-        DatabaseReference users = base.child("users");
-        DatabaseReference uid = users.child(authUser.getUid());
-        DatabaseReference usuarioss = uid.child("usuarios");
-
-        DatabaseReference reference = usuarioss.push();
-
         return root;
     }//Oncreate
-
-
 
 
 
@@ -152,10 +153,11 @@ public class NotificationsFragment extends Fragment {
     private void subirFoto(Uri image_url) {
         progressDialog.setMessage("Actualizando foto");
         progressDialog.show();
-        String rute_storage_photo = storage_path + " " + photo + " " + mAuth.getUid() + "" + idd;
+        rute_storage_photo = storage_path + " " + photo + " " + mAuth.getUid() + "LA";
+        rute_storage_photoP = photo + " " + mAuth.getUid() + "LA";
         StorageReference reference = storageReference.child(rute_storage_photo);
-        reference.putFile(image_url).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
 
+        reference.putFile(image_url).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @SuppressLint("SuspiciousIndentation")
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -168,9 +170,28 @@ public class NotificationsFragment extends Fragment {
                                 String download_uri = uri.toString();
                                 HashMap<String, Object> map = new HashMap<>();
                                 map.put("photo", download_uri);
-                                mfirestore.collection("coche").document(idd).update(map);
+                                mfirestore.collection("coche").document("LA").update(map);
                                 Toast.makeText(requireContext(), "Foto actualizada", Toast.LENGTH_SHORT).show();
                                 progressDialog.dismiss();
+                                binding.imgPerfil2.setImageURI(image_url);
+                                SharedViewModel sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+                                sharedViewModel.getUser().observe(getViewLifecycleOwner(), (user) -> {
+                                    authUser = user;
+                                    /*
+                                    Usuario usuario = new Usuario();
+                                    usuario.setImagenPerfil(rute_storage_photoP);
+
+                                    DatabaseReference base = FirebaseDatabase.getInstance().getReference();
+                                    DatabaseReference users = base.child("users");
+                                    DatabaseReference uid = users.child(authUser.getUid());
+                                    DatabaseReference usuarioss = uid.child("usuarios");
+
+                                    DatabaseReference reference = usuarioss.push();
+                                    reference.setValue(usuario);
+
+                                     */
+
+                                });
                             }
                         });
                     }
@@ -182,8 +203,6 @@ public class NotificationsFragment extends Fragment {
             }
         });
     }
-
-
 
     @Override
     public void onDestroyView() {
