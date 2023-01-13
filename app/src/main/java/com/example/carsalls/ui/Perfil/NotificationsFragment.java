@@ -27,6 +27,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -57,6 +60,14 @@ public class NotificationsFragment extends Fragment {
 
     ProgressDialog progressDialog;
 
+    //PRECARGAR DATOS Y FOTO
+
+    private final DatabaseReference base = FirebaseDatabase.getInstance().getReference();
+    private final DatabaseReference users = base.child("users");
+    private final DatabaseReference uid = users.child(mAuth.getUid());
+    private final DatabaseReference usuarioss = uid.child("usuarios");
+
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         PerfilViewModel notificationsViewModel =
@@ -66,27 +77,41 @@ public class NotificationsFragment extends Fragment {
         View root = binding.getRoot();
 
 
+        usuarioss.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
         SharedViewModel sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
         sharedViewModel.getUser().observe(getViewLifecycleOwner(), (user) -> {
                 authUser = user;
 
-        //RELLENAR DATOS DE USUARIO
-        Usuario usuario = new Usuario();
-
-        usuario.setNombre(mAuth.getCurrentUser().getDisplayName());
-        usuario.setCorreo(mAuth.getCurrentUser().getEmail());
-        usuario.setImagenPerfil(String.valueOf(mAuth.getCurrentUser().getPhotoUrl()));
-
-        DatabaseReference base = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference users = base.child("users");
-        DatabaseReference uid = users.child(authUser.getUid());
-        DatabaseReference usuarioss = uid.child("usuarios");
-
-        DatabaseReference reference = usuarioss.push();
-            reference.setValue(usuario);
-
             binding.txtNombreUser.setText(authUser.getDisplayName());
             binding.txtCorreoElectronico2.setText(authUser.getEmail());
+
 
         });
 
@@ -174,24 +199,21 @@ public class NotificationsFragment extends Fragment {
                                 Toast.makeText(requireContext(), "Foto actualizada", Toast.LENGTH_SHORT).show();
                                 progressDialog.dismiss();
                                 binding.imgPerfil2.setImageURI(image_url);
-                                SharedViewModel sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
-                                sharedViewModel.getUser().observe(getViewLifecycleOwner(), (user) -> {
-                                    authUser = user;
-                                    /*
-                                    Usuario usuario = new Usuario();
-                                    usuario.setImagenPerfil(rute_storage_photoP);
 
-                                    DatabaseReference base = FirebaseDatabase.getInstance().getReference();
-                                    DatabaseReference users = base.child("users");
-                                    DatabaseReference uid = users.child(authUser.getUid());
-                                    DatabaseReference usuarioss = uid.child("usuarios");
+                                //RELLENAR DATOS DE USUARIO
+                                Usuario usuario = new Usuario();
 
-                                    DatabaseReference reference = usuarioss.push();
-                                    reference.setValue(usuario);
+                                usuario.setNombre(mAuth.getCurrentUser().getDisplayName());
+                                usuario.setCorreo(mAuth.getCurrentUser().getEmail());
+                                usuario.setImagenPerfil(rute_storage_photoP);
 
-                                     */
+                                DatabaseReference base = FirebaseDatabase.getInstance().getReference();
+                                DatabaseReference users = base.child("users");
+                                DatabaseReference uid = users.child(authUser.getUid());
+                                DatabaseReference usuarioss = uid.child("usuarios");
 
-                                });
+                                DatabaseReference reference = usuarioss.push();
+                                reference.setValue(usuario);
                             }
                         });
                     }
