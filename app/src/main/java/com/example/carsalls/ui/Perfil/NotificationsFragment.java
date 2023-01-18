@@ -51,7 +51,6 @@ public class NotificationsFragment extends Fragment {
     private FirebaseUser authUser;
     private FirebaseAuth mAuth;
     private FirebaseFirestore mfirestore;
-
     private static final int COD_SEL_IMAGE = 300;
 
     StorageReference storageReference;
@@ -63,6 +62,7 @@ public class NotificationsFragment extends Fragment {
     ProgressDialog progressDialog;
 
     String download_uri;
+    String downloadUrl;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -72,6 +72,12 @@ public class NotificationsFragment extends Fragment {
         binding = FragmentPerfilBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        //INSTANCIAR VARIABLES FIREBASE
+        progressDialog = new ProgressDialog(requireContext());
+        mfirestore = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+        storageReference = FirebaseStorage.getInstance().getReference();
+
 
         //SHAREDVIEWMODEL ES PARA PASAR EL USUARIO A ESTE FRAGMENTO, CUALQUIER CODIGO QUE
         //NECESITE EL AUTHUSER SE HACE DENTRO
@@ -80,15 +86,15 @@ public class NotificationsFragment extends Fragment {
                 authUser = user;
 
             binding.txtNombreUser.setText(authUser.getDisplayName());
+            Log.d("NOMBREE", authUser.getDisplayName());
+
             binding.txtCorreoElectronico2.setText(authUser.getEmail());
+
+
+
 
         });
 
-        //INSTANCIAR VARIABLES FIREBASE
-        progressDialog = new ProgressDialog(requireContext());
-        mfirestore = FirebaseFirestore.getInstance();
-        mAuth = FirebaseAuth.getInstance();
-        storageReference = FirebaseStorage.getInstance().getReference();
 
         //BOTONES
         binding.btnEditar.setOnClickListener(new View.OnClickListener() {
@@ -149,7 +155,6 @@ public class NotificationsFragment extends Fragment {
         rute_storage_photo = storage_path + " " + photo + " " + mAuth.getUid() + "LA";
 
         StorageReference reference = storageReference.child(rute_storage_photo);
-
         reference.putFile(image_url).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @SuppressLint("SuspiciousIndentation")
             @Override
@@ -166,22 +171,27 @@ public class NotificationsFragment extends Fragment {
                                 mfirestore.collection("coche").document("LA").update(map);
                                 Toast.makeText(requireContext(), "Foto actualizada", Toast.LENGTH_SHORT).show();
                                 progressDialog.dismiss();
-                                binding.imgPerfil2.setImageURI(image_url);
 
-                                //RELLENAR DATOS DE USUARIO
-                                Usuario usuario = new Usuario();
+                                //CONSEGUIR URL DE LA FOTO Y PASARLA AL USUARIO
+                                reference.getDownloadUrl().addOnCompleteListener(task -> {
+                                    Uri downloadUri = task.getResult();
+                                    Glide.with(requireContext()).load(downloadUri).into(binding.imgPerfil2);
+                                     downloadUrl = downloadUri.toString();
 
-                                usuario.setNombre(mAuth.getCurrentUser().getDisplayName());
-                                usuario.setCorreo(mAuth.getCurrentUser().getEmail());
-                                usuario.setImagenPerfil(rute_storage_photo);
+                                    //RELLENAR DATOS DE USUARIO
+                                    Usuario usuario = new Usuario();
+                                    usuario.setNombre(mAuth.getCurrentUser().getDisplayName());
+                                    usuario.setCorreo(mAuth.getCurrentUser().getEmail());
+                                    usuario.setImagenPerfil(downloadUrl);
 
-                                DatabaseReference base = FirebaseDatabase.getInstance().getReference();
-                                DatabaseReference users = base.child("users");
-                                DatabaseReference uid = users.child(authUser.getUid());
-                                DatabaseReference usuarioss = uid.child("usuarios");
+                                    DatabaseReference base = FirebaseDatabase.getInstance().getReference();
+                                    DatabaseReference users = base.child("users");
+                                    DatabaseReference uid = users.child(authUser.getUid());
+                                    DatabaseReference usuarioss = uid.child("usuarios");
 
-                                DatabaseReference reference = usuarioss.push();
-                                reference.setValue(usuario);
+                                    DatabaseReference reference = usuarioss.push();
+                                    reference.setValue(usuario);
+                                });
                             }
                         });
                     }
