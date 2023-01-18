@@ -2,6 +2,7 @@ package com.example.carsalls.ui.Perfil;
 
 import static android.app.Activity.RESULT_OK;
 
+
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -18,6 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.bumptech.glide.Glide;
 import com.example.carsalls.MainActivity;
 import com.example.carsalls.ViewModels.SharedViewModel;
 import com.example.carsalls.databinding.FragmentPerfilBinding;
@@ -27,19 +29,21 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
+
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+
 
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
+
 
 public class NotificationsFragment extends Fragment {
 
@@ -56,17 +60,9 @@ public class NotificationsFragment extends Fragment {
     private Uri image_url;
     String photo = "photo";
     String rute_storage_photo;
-    String rute_storage_photoP;
-
     ProgressDialog progressDialog;
 
-    //PRECARGAR DATOS Y FOTO
-
-    private final DatabaseReference base = FirebaseDatabase.getInstance().getReference();
-    private final DatabaseReference users = base.child("users");
-    private final DatabaseReference uid = users.child(mAuth.getUid());
-    private final DatabaseReference usuarioss = uid.child("usuarios");
-
+    String download_uri;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -77,34 +73,8 @@ public class NotificationsFragment extends Fragment {
         View root = binding.getRoot();
 
 
-        usuarioss.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-
+        //SHAREDVIEWMODEL ES PARA PASAR EL USUARIO A ESTE FRAGMENTO, CUALQUIER CODIGO QUE
+        //NECESITE EL AUTHUSER SE HACE DENTRO
         SharedViewModel sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
         sharedViewModel.getUser().observe(getViewLifecycleOwner(), (user) -> {
                 authUser = user;
@@ -112,9 +82,7 @@ public class NotificationsFragment extends Fragment {
             binding.txtNombreUser.setText(authUser.getDisplayName());
             binding.txtCorreoElectronico2.setText(authUser.getEmail());
 
-
         });
-
 
         //INSTANCIAR VARIABLES FIREBASE
         progressDialog = new ProgressDialog(requireContext());
@@ -122,7 +90,7 @@ public class NotificationsFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference();
 
-
+        //BOTONES
         binding.btnEditar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -179,7 +147,7 @@ public class NotificationsFragment extends Fragment {
         progressDialog.setMessage("Actualizando foto");
         progressDialog.show();
         rute_storage_photo = storage_path + " " + photo + " " + mAuth.getUid() + "LA";
-        rute_storage_photoP = photo + " " + mAuth.getUid() + "LA";
+
         StorageReference reference = storageReference.child(rute_storage_photo);
 
         reference.putFile(image_url).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -192,7 +160,7 @@ public class NotificationsFragment extends Fragment {
                         uriTask.addOnSuccessListener(new OnSuccessListener<Uri>() {
                             @Override
                             public void onSuccess(Uri uri) {
-                                String download_uri = uri.toString();
+                                download_uri = uri.toString();
                                 HashMap<String, Object> map = new HashMap<>();
                                 map.put("photo", download_uri);
                                 mfirestore.collection("coche").document("LA").update(map);
@@ -205,7 +173,7 @@ public class NotificationsFragment extends Fragment {
 
                                 usuario.setNombre(mAuth.getCurrentUser().getDisplayName());
                                 usuario.setCorreo(mAuth.getCurrentUser().getEmail());
-                                usuario.setImagenPerfil(rute_storage_photoP);
+                                usuario.setImagenPerfil(rute_storage_photo);
 
                                 DatabaseReference base = FirebaseDatabase.getInstance().getReference();
                                 DatabaseReference users = base.child("users");
@@ -225,6 +193,7 @@ public class NotificationsFragment extends Fragment {
             }
         });
     }
+
 
     @Override
     public void onDestroyView() {

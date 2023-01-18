@@ -19,7 +19,7 @@
         app:shapeAppearance="@style/roundedImageViewRounded"
         app:shapeAppearanceOverlay="@style/roundedImageViewRounded"
         app:srcCompat="@drawable/avatar"
-        tools:src="@drawable/avatar" />
+        tools:src="@drawable/ic_launcher2_background" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline2"

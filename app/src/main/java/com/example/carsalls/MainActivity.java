@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
                         sharedViewModel.setUser(user);
                     }
                 });
+
     }//Oncreate
 
     @Override
