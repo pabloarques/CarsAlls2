@@ -51,7 +51,7 @@ public class HomeFragment extends Fragment {
         sharedViewModel.getUser().observe(getViewLifecycleOwner(), (user) -> {
             authUser = user;
 
-            //binding.txtUser.setText(authUser.getDisplayName());
+            binding.txtUser.setText(authUser.getDisplayName());
 
         });
 

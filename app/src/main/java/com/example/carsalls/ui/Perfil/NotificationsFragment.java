@@ -86,11 +86,7 @@ public class NotificationsFragment extends Fragment {
                 authUser = user;
 
             binding.txtNombreUser.setText(authUser.getDisplayName());
-            Log.d("NOMBREE", authUser.getDisplayName());
-
             binding.txtCorreoElectronico2.setText(authUser.getEmail());
-
-
 
 
         });
