@@ -30,9 +30,14 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -53,8 +58,10 @@ public class NotificationsFragment extends Fragment {
     private FirebaseFirestore mfirestore;
     private static final int COD_SEL_IMAGE = 300;
 
+    DatabaseReference databaseReference;
     StorageReference storageReference;
     String storage_path = "Perfil/*";
+
 
     private Uri image_url;
     String photo = "photo";
@@ -70,7 +77,7 @@ public class NotificationsFragment extends Fragment {
                 new ViewModelProvider(this).get(PerfilViewModel.class);
 
         binding = FragmentPerfilBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
+
 
         //INSTANCIAR VARIABLES FIREBASE
         progressDialog = new ProgressDialog(requireContext());
@@ -85,12 +92,12 @@ public class NotificationsFragment extends Fragment {
         sharedViewModel.getUser().observe(getViewLifecycleOwner(), (user) -> {
                 authUser = user;
 
-            binding.txtNombreUser.setText(authUser.getDisplayName());
-            binding.txtCorreoElectronico2.setText(authUser.getEmail());
+                binding.txtNombreUser.setText(authUser.getDisplayName());
+                binding.txtCorreoElectronico2.setText(authUser.getEmail());
 
+                databaseReference = FirebaseDatabase.getInstance().getReference();
 
         });
-
 
         //BOTONES
         binding.btnEditar.setOnClickListener(new View.OnClickListener() {
@@ -121,6 +128,7 @@ public class NotificationsFragment extends Fragment {
             }
         });
 
+        View root = binding.getRoot();
         return root;
     }//Oncreate
 
@@ -180,10 +188,8 @@ public class NotificationsFragment extends Fragment {
                                     usuario.setCorreo(mAuth.getCurrentUser().getEmail());
                                     usuario.setImagenPerfil(downloadUrl);
 
-                                    DatabaseReference base = FirebaseDatabase.getInstance().getReference();
-                                    DatabaseReference users = base.child("users");
-                                    DatabaseReference uid = users.child(authUser.getUid());
-                                    DatabaseReference usuarioss = uid.child("usuarios");
+                                    databaseReference = FirebaseDatabase.getInstance().getReference();
+                                    DatabaseReference usuarioss = databaseReference.child("usuarios");
 
                                     DatabaseReference reference = usuarioss.push();
                                     reference.setValue(usuario);
