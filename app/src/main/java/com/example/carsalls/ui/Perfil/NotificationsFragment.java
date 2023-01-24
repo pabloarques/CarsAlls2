@@ -95,6 +95,7 @@ public class NotificationsFragment extends Fragment {
                 binding.txtNombreUser.setText(authUser.getDisplayName());
                 binding.txtCorreoElectronico2.setText(authUser.getEmail());
 
+                //PEDIR LA FOTO A LA BASE
                 databaseReference = FirebaseDatabase.getInstance().getReference();
 
         });
@@ -191,7 +192,7 @@ public class NotificationsFragment extends Fragment {
                                     databaseReference = FirebaseDatabase.getInstance().getReference();
                                     DatabaseReference usuarioss = databaseReference.child("usuarios");
 
-                                    DatabaseReference reference = usuarioss.push();
+                                    DatabaseReference reference = usuarioss.child(authUser.getUid());
                                     reference.setValue(usuario);
                                 });
                             }
