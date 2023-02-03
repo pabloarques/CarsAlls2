@@ -1,6 +1,7 @@
 package com.example.carsalls.ui.Perfil;
 
 import static android.app.Activity.RESULT_OK;
+import static android.content.ContentValues.TAG;
 
 
 import android.annotation.SuppressLint;
@@ -21,6 +22,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.example.carsalls.MainActivity;
+import com.example.carsalls.R;
 import com.example.carsalls.ViewModels.SharedViewModel;
 import com.example.carsalls.databinding.FragmentPerfilBinding;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -97,6 +99,50 @@ public class NotificationsFragment extends Fragment {
 
                 //PEDIR LA FOTO A LA BASE
                 databaseReference = FirebaseDatabase.getInstance().getReference();
+                databaseReference.child("usuarios").child(mAuth.getUid()).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if(snapshot.exists()){
+                            String rutaImagen = snapshot.child("imagenPerfil").getValue(String.class);
+                            System.out.println(rutaImagen);
+
+                            Picasso.get()
+                                    .load(rutaImagen)
+                                    .into(binding.imgPerfil2);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        System.out.println("Fallo de lectura: " + error.getCode());
+                    }
+                });
+
+            binding.btnEliminar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    HashMap<String, Object> map = new HashMap<>();
+                    map.put("photo", "");
+                    mfirestore.collection("coche").document("LA")
+                            .delete()
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Log.d(TAG, "DocumentSnapshot successfully deleted!");
+                                    binding.imgPerfil2.setImageResource(R.drawable.ic_launcher2_background);
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w(TAG, "Error deleting document", e);
+                                }
+                            });
+
+
+
+                }
+            });
 
         });
 
@@ -109,16 +155,7 @@ public class NotificationsFragment extends Fragment {
         });
 
 
-        binding.btnEliminar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                HashMap<String, Object> map = new HashMap<>();
-                map.put("photo", "");
-                mfirestore.collection("coche").document("LA").update(map);
-                Toast.makeText(requireContext(), "Foto eliminada", Toast.LENGTH_SHORT).show();
 
-            }
-        });
 
         binding.btnCerrarSesion.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -139,6 +176,7 @@ public class NotificationsFragment extends Fragment {
         Intent i = new Intent(Intent.ACTION_PICK);
         i.setType("image/*");
         startActivityForResult(i, COD_SEL_IMAGE);
+
     }
 
 

@@ -6,73 +6,68 @@
     android:layout_height="match_parent"
     tools:context=".ui.home.HomeFragment">
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="375dp"
-        android:layout_height="71dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/img_Perfil"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline4"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.486"
+        app:layout_constraintHorizontal_bias="0.051"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.045">
+        app:shapeAppearance="@style/roundedImageViewRounded"
+        app:shapeAppearanceOverlay="@style/roundedImageViewRounded"
+        app:srcCompat="@drawable/ic_launcher2_background"
+        tools:src="@drawable/ic_launcher2_background" />
 
-        <ImageView
-            android:id="@+id/img_Perfil"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            tools:src="@tools:sample/avatars" />
+    <TextView
+        android:id="@+id/txt_hola"
+        android:layout_width="211dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="116dp"
+        android:text="Hola,"
+        app:layout_constraintBottom_toBottomOf="@+id/img_Perfil"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/img_Perfil"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.546" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical">
+    <TextView
+        android:id="@+id/txt_User"
+        android:layout_width="208dp"
+        android:layout_height="29dp"
+        android:text="Usuario"
+        android:textColor="#000000"
+        app:layout_constraintBottom_toTopOf="@+id/guideline4"
+        app:layout_constraintEnd_toEndOf="@+id/txt_hola"
+        app:layout_constraintHorizontal_bias="0.888"
+        app:layout_constraintStart_toEndOf="@+id/img_Perfil"
+        app:layout_constraintTop_toBottomOf="@+id/txt_hola"
+        app:layout_constraintVertical_bias="0.0" />
 
-            <TextView
-                android:id="@+id/txt_hola"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Hola," />
-
-            <TextView
-                android:id="@+id/txt_User"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Usuario"
-                android:textColor="#000000" />
-        </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="333dp"
-        android:layout_height="77dp"
-        android:orientation="horizontal"
+    <ImageButton
+        android:id="@+id/imgb_Coches"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/BotonesHomeFragment"
+        android:minHeight="48dp"
+        android:src="@drawable/ic_baseline_directions_car_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.176"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-        app:layout_constraintVertical_bias="0.066">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.237" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="110dp" />
 
-            <ImageButton
-                android:id="@+id/imgb_Coches"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/BotonesHomeFragment"
-                android:minHeight="48dp"
-                android:src="@drawable/ic_baseline_directions_car_24"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.056"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.47" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

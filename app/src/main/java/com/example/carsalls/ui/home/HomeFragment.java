@@ -19,14 +19,19 @@ import com.example.carsalls.databinding.FragmentHomeBinding;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
+    DatabaseReference databaseReference;
     private FirebaseUser authUser;
     private FirebaseAuth mAuth;
-    private Uri uri;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         HomeViewModel homeViewModel =
@@ -35,8 +40,6 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        binding.imgPerfil.setImageResource(R.drawable.kkabarth);
-
         binding.imgbCoches.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -44,6 +47,7 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        mAuth = FirebaseAuth.getInstance();
 
         //SHAREDVIEWMODEL ES PARA PASAR EL USUARIO A ESTE FRAGMENTO, CUALQUIER CODIGO QUE
         //NECESITE EL AUTHUSER SE HACE DENTRO
@@ -53,7 +57,32 @@ public class HomeFragment extends Fragment {
 
             binding.txtUser.setText(authUser.getDisplayName());
 
+/*
+            databaseReference = FirebaseDatabase.getInstance().getReference();
+            databaseReference.child("usuarios").child(mAuth.getUid()).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if(snapshot.exists()){
+                        String rutaImagen = snapshot.child("imagenPerfil").getValue(String.class);
+                        System.out.println(rutaImagen);
+
+                        Picasso.get()
+                                .load(rutaImagen)
+                                .into(binding.imgPerfil);
+                    }else{
+                        binding.imgPerfil.setImageResource(R.drawable.ic_launcher_background);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    System.out.println("Fallo de lectura: " + error.getCode());
+                }
+            });
+
+ */
         });
+
 
         return root;
     }
