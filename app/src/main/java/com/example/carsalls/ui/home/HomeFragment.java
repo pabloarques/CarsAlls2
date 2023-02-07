@@ -55,22 +55,24 @@ public class HomeFragment extends Fragment {
         sharedViewModel.getUser().observe(getViewLifecycleOwner(), (user) -> {
             authUser = user;
 
+            //NOMBRE
             binding.txtUser.setText(authUser.getDisplayName());
 
-/*
+            //FOTO
             databaseReference = FirebaseDatabase.getInstance().getReference();
             databaseReference.child("usuarios").child(mAuth.getUid()).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if(snapshot.exists()){
+                    if(snapshot.exists()) {
                         String rutaImagen = snapshot.child("imagenPerfil").getValue(String.class);
                         System.out.println(rutaImagen);
-
-                        Picasso.get()
-                                .load(rutaImagen)
-                                .into(binding.imgPerfil);
-                    }else{
-                        binding.imgPerfil.setImageResource(R.drawable.ic_launcher_background);
+                        if (rutaImagen != " ") {
+                            Picasso.get()
+                                    .load(rutaImagen)
+                                    .into(binding.imgPerfil);
+                        }else {
+                            binding.imgPerfil.setImageResource(R.drawable.ic_launcher_background);
+                        }
                     }
                 }
 
@@ -80,9 +82,8 @@ public class HomeFragment extends Fragment {
                 }
             });
 
- */
-        });
 
+        });
 
         return root;
     }

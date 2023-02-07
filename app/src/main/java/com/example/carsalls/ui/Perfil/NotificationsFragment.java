@@ -122,7 +122,6 @@ public class NotificationsFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
                     HashMap<String, Object> map = new HashMap<>();
-                    map.put("photo", "");
                     mfirestore.collection("coche").document("LA")
                             .delete()
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
