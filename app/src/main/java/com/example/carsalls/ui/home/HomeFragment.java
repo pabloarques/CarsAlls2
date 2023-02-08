@@ -39,8 +39,9 @@ public class HomeFragment extends Fragment {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+        binding.imgAnuncio.setImageResource(R.drawable.kiko);
 
-        binding.imgbCoches.setOnClickListener(new View.OnClickListener() {
+        binding.imgbCochesNuevos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                
@@ -57,31 +58,6 @@ public class HomeFragment extends Fragment {
 
             //NOMBRE
             binding.txtUser.setText(authUser.getDisplayName());
-
-            //FOTO
-            databaseReference = FirebaseDatabase.getInstance().getReference();
-            databaseReference.child("usuarios").child(mAuth.getUid()).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if(snapshot.exists()) {
-                        String rutaImagen = snapshot.child("imagenPerfil").getValue(String.class);
-                        System.out.println(rutaImagen);
-                        if (rutaImagen != " ") {
-                            Picasso.get()
-                                    .load(rutaImagen)
-                                    .into(binding.imgPerfil);
-                        }else {
-                            binding.imgPerfil.setImageResource(R.drawable.ic_launcher_background);
-                        }
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    System.out.println("Fallo de lectura: " + error.getCode());
-                }
-            });
-
 
         });
 

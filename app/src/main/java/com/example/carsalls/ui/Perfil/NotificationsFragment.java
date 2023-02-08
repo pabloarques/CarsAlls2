@@ -121,25 +121,10 @@ public class NotificationsFragment extends Fragment {
             binding.btnEliminar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    HashMap<String, Object> map = new HashMap<>();
-                    mfirestore.collection("coche").document("LA")
-                            .delete()
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    Log.d(TAG, "DocumentSnapshot successfully deleted!");
-                                    binding.imgPerfil2.setImageResource(R.drawable.ic_launcher2_background);
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.w(TAG, "Error deleting document", e);
-                                }
-                            });
+                    databaseReference = FirebaseDatabase.getInstance().getReference();
+                    databaseReference.child("usuarios").child(mAuth.getUid()).removeValue();
 
-
-
+                    binding.imgPerfil2.setImageResource(R.drawable.ic_launcher_background);
                 }
             });
 
