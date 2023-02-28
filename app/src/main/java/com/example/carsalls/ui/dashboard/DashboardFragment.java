@@ -1,7 +1,14 @@
 package com.example.carsalls.ui.dashboard;
 
+import static com.example.carsalls.R.drawable.autocaste;
+import static com.example.carsalls.R.drawable.auva;
+import static com.example.carsalls.R.drawable.avatar;
+import static com.example.carsalls.R.drawable.cs;
+
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
@@ -12,6 +19,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -82,6 +90,18 @@ public class DashboardFragment extends Fragment {
                 }
         );
 
+        Resources res = getResources();
+        Drawable drawable = ResourcesCompat.getDrawable(res, autocaste, null);
+
+        Resources res2 = getResources();
+        Drawable drawable2 = ResourcesCompat.getDrawable(res, R.drawable.aut, null);
+
+        Resources res3 = getResources();
+        Drawable drawable3 = ResourcesCompat.getDrawable(res, cs, null);
+
+        Resources res4 = getResources();
+        Drawable drawable4 = ResourcesCompat.getDrawable(res, auva, null);
+
         //Concesionarios DATOS ESTATICOS:
 
         Marker marker = new Marker(binding.map);
@@ -90,7 +110,36 @@ public class DashboardFragment extends Fragment {
         marker.setIcon(getResources().getDrawable(R.drawable.ic_baseline_car_repair_24));
         marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_TOP);
         marker.setTitle("AUTOMOVILES V CASTELLÓN");
+        marker.setImage(drawable);
         binding.map.getOverlays().add(marker);
+
+        Marker marker2 = new Marker(binding.map);
+        marker2.setPosition(new GeoPoint(39.4715612, -0.3930977));
+        marker2.setTextLabelFontSize(40);
+        marker2.setIcon(getResources().getDrawable(R.drawable.ic_baseline_car_repair_24));
+        marker2.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_TOP);
+        marker2.setTitle("AUTOMOVILES VALENCIA");
+        marker2.setImage(drawable2);
+        binding.map.getOverlays().add(marker2);
+
+
+        Marker marker3 = new Marker(binding.map);
+        marker3.setPosition(new GeoPoint(39.487425, -0.447312));
+        marker3.setTextLabelFontSize(40);
+        marker3.setIcon(getResources().getDrawable(R.drawable.ic_baseline_car_repair_24));
+        marker3.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_TOP);
+        marker3.setTitle("AUTOMOVILES MANISES");
+        marker3.setImage(drawable3);
+        binding.map.getOverlays().add(marker3);
+
+        Marker marker4 = new Marker(binding.map);
+        marker4.setPosition(new GeoPoint(39.462010, -0.375484));
+        marker4.setTextLabelFontSize(40);
+        marker4.setIcon(getResources().getDrawable(R.drawable.ic_baseline_car_repair_24));
+        marker4.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_TOP);
+        marker4.setTitle("RUZAFA CARS");
+        marker4.setImage(drawable4);
+        binding.map.getOverlays().add(marker4);
 
     }//onViewCreated
 
